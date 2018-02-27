@@ -6,7 +6,7 @@ import { Event } from '../../lib/event';
   template: `
       <hr>
       <h4>Last Component <%= data %></h4>
-      <my-component data="data" func="func">Loading....</my-component>
+      <my-child-component data="data" func="func">Loading....</my-child-component>
       `,
   scope: {
     data: '=', // data binding
@@ -14,9 +14,7 @@ import { Event } from '../../lib/event';
   }
 })
 class MyLastChildComponent{
-  constructor(){
-    this.data = null;
-  }
+  constructor(){}
 
   // @Event('click','h4')
   handleClick(e){

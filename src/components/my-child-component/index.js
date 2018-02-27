@@ -13,9 +13,7 @@ import { Event } from '../../lib/event';
   }
 })
 class MyChildComponent{
-  constructor(){
-    this.data = null;
-  }
+  constructor(){}
 
   @Event('click','small')
   handleClick(e){

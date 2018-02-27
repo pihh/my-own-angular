@@ -8,19 +8,14 @@ function Render(element,controller){
   // render and bind events
   __components__.getInstance().forEach(comp => {
     element.querySelectorAll(comp.selector).forEach(node => {
-
+      let generateTemplateCounter = 0;
       // TODO: render with data binding - node attrs
-      let inst = new comp.class();
-
-      let i = 0;
-      inst.scope = Scope(inst,() => {
-         console.log('Object changed:', ++i);
-       });
+      let inst = Scope(new comp.class());
 
       inst.render = function(){
 
-        inst.$node = node;
-        inst.$parent = controller || null;
+        inst.$node = inst.$node || node;
+        inst.$parent = inst.$parent || controller || null;
 
         // Bind todos os parents
         if(controller && comp.scope){
@@ -31,11 +26,8 @@ function Render(element,controller){
             let parentValue = controller[classValue];
 
             if(bindType === '='){
-              if(node.attributes[key]){
                 inst[classKey] = parentValue;
-              }
             }else if(bindType === '@'){
-              if(node.attributes[key]){
 
                 const buildFunction = ObjectStringHandler.getFunction(classValue);
                 inst[classKey]= function(){
@@ -43,22 +35,40 @@ function Render(element,controller){
                 }
 
                 // Break stuff:
-                console.log({
-                  func: buildFunction.function,
-                  instClassKey: inst[classKey],
-                  instParentValue: parentValue,
-                  instClassValue: classValue,
-                  inst: inst
-                });
-
-              }
+                // console.log({
+                //   func: buildFunction.function,
+                //   instClassKey: inst[classKey],
+                //   instParentValue: parentValue,
+                //   instClassValue: classValue,
+                //   inst: inst
+                // });
+            }else{
+              inst[classKey] = parentValue;
             }
           });
         }
 
-        node.innerHTML = comp.template(inst);
 
-        Render(node,inst);
+        function generateTemplate(){
+
+          try{
+            node.innerHTML = comp.template(inst);
+            Render(node,inst);
+
+            inst.$rendered = true;
+          }catch(ex){
+            generateTemplateCounter++;
+            if(generateTemplateCounter < 10){
+              setTimeout(generateTemplate(),100);
+            }else{
+              throw 'Tried to render more than 10 times. Throwing exception';
+            }
+          }
+        }
+        generateTemplate();
+
+
+
       }
 
       if(inst.__events__){
@@ -69,7 +79,8 @@ function Render(element,controller){
               inst.__events__[type].forEach(item => {
                 if(e.target.matches(item.selector)){
                   if(item.fn.call(inst, e)){
-                    inst.render(node);
+                    console.log('Call event');
+                    // inst.render(node);
                   }
                 }
               })

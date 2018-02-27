@@ -7,5 +7,5 @@ function Bootstrap(){
   Render(document);
 }
 
-Bootstrap();
+
 export { Bootstrap };
