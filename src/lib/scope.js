@@ -1,7 +1,7 @@
 'use strict';
 
 import { PubSub } from './pubsub';
-import { Observer, ObjectObserver } from './observer';
+import { Observer, DeepObserver } from './observer';
 import { Render } from './template';
 
 const _chanel = 'scope:changed';
@@ -20,23 +20,21 @@ PubSub.subscribe(_chanel,(instance) => {
 	scopeChange(instance);
 })
 
+
 function Scope(instance){
-	if(!instance.$trackedProperties){
-		instance.$trackedProperties = [];
-	}
-
-	Object.keys(instance).forEach(key => {
-
-		if(key !== '$trackedProperties' && instance[key] && typeof instance[key] === "object"){
-			console.log('Observing instance key', key);
-			instance[key] = ObjectObserver(instance[key], ()=>{
-			 	PubSub.publish(_chanel,instance);
+	Object.keys(instance).forEach(k => {
+		if(instance[k] && typeof instance[k] === "object"){
+			DeepObserver(instance[k],{
+				set(target, path, value, receiver) {
+				   PubSub.publish(_chanel,instance);
+				},
+				deleteProperty(target, path) {
+				   console.log('remove observed property');
+				}
 			})
-			instance.$trackedProperties.push(key);
 		}
 
-	});
-
+	})
 	return Observer(instance, ()=>{
 		PubSub.publish(_chanel,instance);
 	})

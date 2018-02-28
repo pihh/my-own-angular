@@ -29,16 +29,11 @@ class MyAppComponent{
   @Event('click','li')
   handleClickLi(e){
     // @TODO: More intuitive mapping to the click events
-
-    for (let todo of this.todos) {
-      if(todo.text === e.target.innerText.trim()){
-        todo.done = !todo.done;
+    this.todos.map(element => {
+      if(element.text === e.target.innerText.trim()){
+        element.done = !element.done;
       }
-    }
-
-    let todos = this.todos;
-    this.todos = [];
-    this.todos = todos;
+    })
     return true;
   }
 
