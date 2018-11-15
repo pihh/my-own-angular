@@ -1,3 +1,4 @@
-Projecto simples para tentar compreender mais a fundo conceitos avançados de ES6 como proxys, reflection, decorators etc etc.
+Simple projecto to learn more in depth ES6 concepts like proxys, reflection, decorators and so on.
+The objective is to make a simple framework that tries to mimic ngx ( by parsing DOM, creating custom HTML elements with event and data listenters) 
 
-O objectivo é fazer um género de angular que faz parse ao DOM, cria custom HTML elements e adiciona-lhes eventos e data listeners.
+Note: Not to use in production, this project is just for learning purposes
